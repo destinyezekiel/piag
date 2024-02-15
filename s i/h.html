@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title></title>
+	<link rel="stylesheet" href="../assets/style.css">
+</head>
+
+<body>
+<div id="addSubjectForm">
+  <input type="text" id="subjectInput" placeholder="Enter Subject"><br>
+  <input type="text" id="pinInput" placeholder="Enter Pin">
+  <button onclick="addSubject()" id="pi">Add Subject</button>
+</div>
+
+<table id="subjectTable" class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">Subjects</th>
+      <th scope="col">Pin</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- Rows will be dynamically added here -->
+  </tbody>
+</table>
+
+<script>
+  // Load subjects and pins from localStorage when the page loads
+  window.onload = function() {
+    loadSubjects();
+  };
+
+  function addSubject() {
+    // Get input values
+    var subject = document.getElementById("subjectInput").value;
+    var pin = document.getElementById("pinInput").value;
+
+    // Create a new row
+    var newRow = document.createElement("tr");
+    newRow.innerHTML = "<td>" + subject + "</td><td>" + pin + "</td>";
+
+    // Append the new row to the table body
+    document.getElementById("subjectTable").getElementsByTagName("tbody")[0].appendChild(newRow);
+
+    // Clear input fields
+    document.getElementById("subjectInput").value = "";
+    document.getElementById("pinInput").value = "";
+
+    // Save subjects and pins to localStorage
+    saveSubjects();
+  }
+
+  function saveSubjects() {
+    var rows = document.getElementById("subjectTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+    var subjects = [];
+
+    // Iterate through each row and save subject and pin to an array
+    for (var i = 0; i < rows.length; i++) {
+      var cells = rows[i].getElementsByTagName("td");
+      var subject = cells[0].innerText;
+      var pin = cells[1].innerText;
+      subjects.push({ subject: subject, pin: pin });
+    }
+
+    // Save subjects array to localStorage
+    localStorage.setItem("subjects", JSON.stringify(subjects));
+  }
+
+  function loadSubjects() {
+    var subjects = JSON.parse(localStorage.getItem("subjects"));
+
+    // If subjects exist in localStorage, populate the table
+    if (subjects) {
+      subjects.forEach(function(item) {
+        var newRow = document.createElement("tr");
+        newRow.innerHTML = "<td>" + item.subject + "</td><td>" + item.pin + "</td>";
+        document.getElementById("subjectTable").getElementsByTagName("tbody")[0].appendChild(newRow);
+      });
+    }
+  }
+</script>
+
+</body>
+
+</html>
