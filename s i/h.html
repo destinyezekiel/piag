@@ -2,178 +2,146 @@
 <html>
 
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title></title>
-	<link rel="stylesheet" href="../assets/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="../assets/style.css">
 </head>
 
 <body>
-<div id="addSubjectForm">
-  <input type="text" id="subjectInput" placeholder="Enter Subject"><br>
-  <input type="text" id="pinInput" placeholder="Enter Pin">
-  <button onclick="addSubject()" id="pi">Add Subject</button>
-</div>
+    <div id="addSubjectForm">
+        <input type="text" id="subjectInput" placeholder="Enter Subject"><br>
+        <input type="text" id="pinInput" placeholder="Enter Pin">
+        <button onclick="addSubject()" id="pi">Add Subject</button>
+    </div>
 
-<table id="subjectTable" class="table table-striped">
-  <thead>
-    <tr>
-      <th scope="col">Subjects</th>
-      <th scope="col">Pin</th>
-    </tr>
-  </thead>
-  <tbody>
-  	
-  <!-- start editing -->
-  <tbody>
-  	<td>Physics (Essay and obj)</td>
-  	<td>803</td>
-  </tbody>
-  
-  		<td>Biology (Essay and obj)</td>
-  	<td>447</td>
-  	
-  	  <tbody>
-  	<td>Civic Education (Essay and obj)</td>
-  	<td>773</td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
-  	
-  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
-  	
-  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
-  	
-  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
-  	
-  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
-  	
-  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
+    <table id="subjectTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">Subjects</th>
+                <th scope="col">Pin</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
 
-  	  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
-  	
-  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
-  	
-  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
-  	
-  <tbody>
-  	<td></td>
-  	<td></td>
-  </tbody>
-  
-  		<td></td>
-  	<td></td>
+    <button onclick="copySubjects()">Copy Subjects and Pins</button>
 
-  	<!--End of editing -->
-  
-    <!-- Rows will be dynamically added here -->
-  </tbody>
-</table>
+    <script>
+        // Load subjects and pins from localStorage when the page loads
+        window.onload = function() {
+            loadSubjects();
+        };
 
-<script>
-  // Load subjects and pins from localStorage when the page loads
-  window.onload = function() {
-    loadSubjects();
-  };
+        function addSubject() {
+            // Get input values
+            var subject = document.getElementById("subjectInput").value;
+            // Generate a unique 3-digit pin
+            var pin = generatePin();
 
-  function addSubject() {
-    // Get input values
-    var subject = document.getElementById("subjectInput").value;
-    var pin = document.getElementById("pinInput").value;
+            // Create a new row
+            var newRow = document.createElement("tr");
+            newRow.innerHTML = "<td>" + subject + "</td><td>" + pin + "</td><td><button onclick='deleteSubject(this)'>Delete</button></td>";
 
-    // Create a new row
-    var newRow = document.createElement("tr");
-    newRow.innerHTML = "<td>" + subject + "</td><td>" + pin + "</td>";
+            // Append the new row to the table body
+            document.getElementById("subjectTable").getElementsByTagName("tbody")[0].appendChild(newRow);
 
-    // Append the new row to the table body
-    document.getElementById("subjectTable").getElementsByTagName("tbody")[0].appendChild(newRow);
+            // Clear input fields
+            document.getElementById("subjectInput").value = "";
+            document.getElementById("pinInput").value = "";
 
-    // Clear input fields
-    document.getElementById("subjectInput").value = "";
-    document.getElementById("pinInput").value = "";
+            // Save subjects and pins to localStorage
+            saveSubjects();
+        }
 
-    // Save subjects and pins to localStorage
-    saveSubjects();
-  }
+        function generatePin() {
+            var pin;
+            var pins = [];
+            var min = 100;
+            var max = 999;
 
-  function saveSubjects() {
-    var rows = document.getElementById("subjectTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
-    var subjects = [];
+            // Get all existing pins
+            var rows = document.getElementById("subjectTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                var existingPin = parseInt(cells[1].innerText);
+                pins.push(existingPin);
+            }
 
-    // Iterate through each row and save subject and pin to an array
-    for (var i = 0; i < rows.length; i++) {
-      var cells = rows[i].getElementsByTagName("td");
-      var subject = cells[0].innerText;
-      var pin = cells[1].innerText;
-      subjects.push({ subject: subject, pin: pin });
-    }
+            // Generate a unique pin
+            do {
+                pin = Math.floor(Math.random() * (max - min + 1)) + min;
+            } while (pins.includes(pin));
 
-    // Save subjects array to localStorage
-    localStorage.setItem("subjects", JSON.stringify(subjects));
-  }
+            return pin;
+        }
 
-  function loadSubjects() {
-    var subjects = JSON.parse(localStorage.getItem("subjects"));
+        function saveSubjects() {
+            var rows = document.getElementById("subjectTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+            var subjects = [];
 
-    // If subjects exist in localStorage, populate the table
-    if (subjects) {
-      subjects.forEach(function(item) {
-        var newRow = document.createElement("tr");
-        newRow.innerHTML = "<td>" + item.subject + "</td><td>" + item.pin + "</td>";
-        document.getElementById("subjectTable").getElementsByTagName("tbody")[0].appendChild(newRow);
-      });
-    }
-  }
-</script>
+            // Iterate through each row and save subject and pin to an array
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                var subject = cells[0].innerText;
+                var pin = cells[1].innerText;
+                subjects.push({
+                    subject: subject,
+                    pin: pin
+                });
+            }
+
+            // Save subjects array to localStorage
+            localStorage.setItem("subjects", JSON.stringify(subjects));
+        }
+
+        function loadSubjects() {
+            var subjects = JSON.parse(localStorage.getItem("subjects"));
+
+            // If subjects exist in localStorage, populate the table
+            if (subjects) {
+                subjects.forEach(function(item) {
+                    var newRow = document.createElement("tr");
+                    newRow.innerHTML = "<td>" + item.subject + "</td><td>" + item.pin + "</td><td><button onclick='deleteSubject(this)'>Delete</button></td>";
+                    document.getElementById("subjectTable").getElementsByTagName("tbody")[0].appendChild(newRow);
+                });
+            }
+        }
+
+        function deleteSubject(button) {
+            // Remove the row when the delete button is clicked
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+
+            // Save subjects and pins to localStorage after deletion
+            saveSubjects();
+        }
+
+        function copySubjects() {
+            var subjects = [];
+            var rows = document.getElementById("subjectTable").getElementsByTagName("tbody")[0].getElementsByTagName("tr");
+
+            // Iterate through each row and add subject and pin to the array
+            for (var i = 0; i < rows.length; i++) {
+                var cells = rows[i].getElementsByTagName("td");
+                var subject = cells[0].innerText;
+                var pin = cells[1].innerText;
+                subjects.push(subject + ": " + pin);
+            }
+
+            // Join the subjects and pins with new lines
+            var subjectsString = subjects.join("\n");
+
+            // Copy the subjects and pins to the clipboard
+            navigator.clipboard.writeText(subjectsString).then(function() {
+                alert("Subjects and Pins copied to clipboard!");
+            }, function() {
+                alert("Failed to copy Subjects and Pins to clipboard!");
+            });
+        }
+    </script>
 
 </body>
 
