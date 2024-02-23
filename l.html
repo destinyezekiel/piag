@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <div id="error-message"></div>
+    <form id="login-form">
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" required><br>
+        
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" required><br>
+        
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        document.getElementById("login-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+
+            var email = document.getElementById("email").value;
+            var password = document.getElementById("password").value;
+
+            // Simple validation
+            if (!email || !password) {
+                document.getElementById("error-message").innerText = "Please enter both email and password";
+                return;
+            }
+
+            // Check if the user exists in local storage
+            var userData = localStorage.getItem(email);
+            if (userData) {
+                userData = JSON.parse(userData);
+                if (userData.password === password) {
+                    // Successful login
+                    document.getElementById("error-message").innerText = "";
+                    alert("Login successful!");
+                    // Redirect to another page or perform other actions
+                } else {
+                    // Failed login
+                    document.getElementById("error-message").innerText = "Invalid email or password";
+                }
+            } else {
+                // User not found
+                document.getElementById("error-message").innerText = "User not found";
+            }
+        });
+    </script>
+</body>
+</html>

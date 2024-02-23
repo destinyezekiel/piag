@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Details</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Password</th>
+            </tr>
+        </thead>
+        <tbody id="user-table">
+            <!-- User details will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <script>
+        // Sample user data (replace this with actual data)
+        var users = [
+            { username: "user1", password: "password1" },
+            { username: "user2", password: "password2" },
+            { username: "user3", password: "password3" }
+        ];
+
+        // Function to populate the table with user details
+        function populateUserTable() {
+            var tableBody = document.getElementById("user-table");
+            tableBody.innerHTML = ""; // Clear existing table rows
+            
+            users.forEach(function(user) {
+                var row = document.createElement("tr");
+                var usernameCell = document.createElement("td");
+                var passwordCell = document.createElement("td");
+                
+                usernameCell.textContent = user.username;
+                passwordCell.textContent = user.password;
+                
+                row.appendChild(usernameCell);
+                row.appendChild(passwordCell);
+                
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Call the function to populate the table
+        populateUserTable();
+    </script>
+</body>
+</html>
